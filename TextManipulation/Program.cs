@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace TextManipulationNoFunctions
 {
@@ -10,24 +11,17 @@ namespace TextManipulationNoFunctions
         static void Main(string[] args)
         {
             // Read the content of the file
-            string filePath = AppDomain.CurrentDomain.BaseDirectory.Replace("bin\\Debug\\net6.0\\", "TestFile.txt");
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string parentDir = Directory.GetParent(path).FullName;
+            string binpath =  Directory.GetParent(parentDir).FullName;
+            string filePath =  Directory.GetParent(binpath).FullName +"\\TestFile.txt";
             string[] lines = File.ReadAllLines(filePath);
             string text = string.Join(Environment.NewLine, lines);
 
             // Count the number of lines and display it
             int lineCount = lines.Length;
 
-            int nonEmptyLineCount = 0;
-
-            foreach (string line in lines)
-            {
-                if (!string.IsNullOrWhiteSpace(line))
-                {
-                    nonEmptyLineCount++;
-                }
-            }
-
-            Console.WriteLine("1.) Number of lines: " + lineCount +"  & Number of non - empty lines: " + nonEmptyLineCount);
+            Console.WriteLine("1.) Number of lines: " + lineCount);
             Console.WriteLine("-------------------------------------");
             Console.WriteLine();
 
@@ -67,52 +61,184 @@ namespace TextManipulationNoFunctions
 
         static string ReplaceWord(string text, string oldWord, string newWord)
         {
-            int startIndex = 0;
-            while (startIndex < text.Length)
-            {
-                int wordIndex = text.IndexOf(oldWord, startIndex, StringComparison.OrdinalIgnoreCase);
-                if (wordIndex == -1)
-                    break;
+            if (text == null)
+                return null;
 
-                text = text.Substring(0, wordIndex) + newWord + text.Substring(wordIndex + oldWord.Length);
-                startIndex = wordIndex + newWord.Length;
+            if (oldWord == null)
+                throw new ArgumentNullException(nameof(oldWord));
+
+            char[] result = new char[text.Length];
+            int resultIndex = 0;
+            int startIndex = 0;
+
+            while (true)
+            {
+                int matchIndex = IndexOfWord(text, oldWord, startIndex);
+
+                if (matchIndex == -1)
+                {
+                    for (int i = startIndex; i < text.Length; i++)
+                    {
+                        result[resultIndex++] = text[i];
+                    }
+                    break;
+                }
+
+                for (int i = startIndex; i < matchIndex; i++)
+                {
+                    result[resultIndex++] = text[i];
+                }
+
+                for (int i = 0; i < newWord.Length; i++)
+                {
+                    result[resultIndex++] = newWord[i];
+                }
+
+                startIndex = matchIndex + oldWord.Length;
             }
 
-            return text;
+            return new string(result, 0, resultIndex);
         }
 
         static void FindWordsStartingWith(string text, char startingChar)
         {
-            string[] words = text.Split(new[] { ' ', '\n', '\r', '\t' , ',', '.'});
-            foreach (string word in words)
+            string currentWord = "";
+            bool isInWord = false;
+
+            foreach (char c in text)
             {
-                if (word.StartsWith(startingChar.ToString(), StringComparison.OrdinalIgnoreCase))
+                if (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == ',' || c == '.')
                 {
-                    Console.WriteLine(word);
+                    if (isInWord && currentWord.Length > 0 && currentWord[0] == startingChar)
+                        Console.WriteLine(currentWord);
+
+                    currentWord = "";
+                    isInWord = false;
+                }
+                else
+                {
+                    currentWord += c;
+                    isInWord = true;
                 }
             }
-        }
-
-        static string[] SplitByComma(string text)
-        {
-            return text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         static int CountWord(string text, string word)
         {
             int count = 0;
-            int startIndex = 0;
-            while (startIndex < text.Length)
-            {
-                int wordIndex = text.IndexOf(word, startIndex, StringComparison.OrdinalIgnoreCase);
-                if (wordIndex == -1)
-                    break;
+            int currentIndex = 0;
+            int foundIndex = FindSubstringIndex(text, word);
 
+            while (foundIndex != -1)
+            {
                 count++;
-                startIndex = wordIndex + word.Length;
+                currentIndex = foundIndex + word.Length;
+                foundIndex = FindSubstringIndex(text, word, currentIndex);
             }
 
             return count;
+        }
+        static int FindSubstringIndex(string input, string word, int startIndex = 0)
+        {
+            int inputLength = input.Length;
+            int wordLength = word.Length;
+
+            for (int i = startIndex; i <= inputLength - wordLength; i++)
+            {
+                int j;
+                for (j = 0; j < wordLength; j++)
+                {
+                    if (input[i + j] != word[j])
+                        break;
+                }
+                if (j == wordLength)
+                {
+                    // Check if the characters before and after the word are non-alphanumeric
+                    if ((i == 0 || !char.IsLetterOrDigit(input[i - 1])) && (i + wordLength == inputLength || !char.IsLetterOrDigit(input[i + wordLength])))
+                        return i;
+                }
+            }
+
+            return -1;
+        }
+
+        static string[] SplitByComma(string text, char comma = ',')
+        {
+            // Count the number of commas in the input string
+            int count = 0;
+            foreach (char c in text)
+            {
+                if (c == comma)
+                {
+                    count++;
+                }
+            }
+
+            // Create an array to hold the substrings
+            string[] result = new string[count + 1];
+
+            // Split the string by iterating over each character
+            int startIndex = 0;
+            int arrayIndex = 0;
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] == comma)
+                {
+                    // Extract the substring between startIndex and i
+                    int substringLength = i - startIndex;
+                    char[] substringChars = new char[substringLength];
+                    for (int j = 0; j < substringLength; j++)
+                    {
+                        substringChars[j] = text[startIndex + j];
+                    }
+                    result[arrayIndex] = new string(substringChars);
+
+                    startIndex = i + 1;
+                    arrayIndex++;
+                }
+            }
+
+            // Add the remaining substring after the last comma
+            int lastSubstringLength = text.Length - startIndex;
+            char[] lastSubstringChars = new char[lastSubstringLength];
+            for (int j = 0; j < lastSubstringLength; j++)
+            {
+                lastSubstringChars[j] = text[startIndex + j];
+            }
+            result[arrayIndex] = new string(lastSubstringChars);
+
+            return result;
+        }
+
+        static int IndexOfWord(string input, string word, int startIndex)
+        {
+            int length = input.Length;
+            int wordLength = word.Length;
+            int matchIndex = -1;
+            bool foundWord = false;
+
+            for (int i = startIndex; i < length; i++)
+            {
+                if (input[i] == word[0])
+                {
+                    int j;
+
+                    for (j = 1; j < wordLength && i + j < length; j++)
+                    {
+                        if (input[i + j] != word[j])
+                            break;
+                    }
+
+                    if (j == wordLength)
+                    {
+                        matchIndex = i;
+                        foundWord = true;
+                        break;
+                    }
+                }
+            }
+
+            return foundWord ? matchIndex : -1;
         }
     }
 }

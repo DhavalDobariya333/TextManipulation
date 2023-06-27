@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace TextManipulationWithFunctions
 {
@@ -77,6 +78,11 @@ namespace TextManipulationWithFunctions
             }
 
             return count;
+
+            //Using Regex
+            //string pattern = @"\b" + Regex.Escape(word) + @"\b";
+            //MatchCollection matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase);
+            //return matches.Count;
         }
 
         static bool IsWholeWord(string text, string word, int index)

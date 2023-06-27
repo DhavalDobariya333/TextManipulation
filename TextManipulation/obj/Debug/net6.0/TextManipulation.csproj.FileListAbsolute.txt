@@ -1,0 +1,15 @@
+E:\Project 101\TextManipulation\bin\Debug\net6.0\TextManipulation.exe
+E:\Project 101\TextManipulation\bin\Debug\net6.0\TextManipulation.deps.json
+E:\Project 101\TextManipulation\bin\Debug\net6.0\TextManipulation.runtimeconfig.json
+E:\Project 101\TextManipulation\bin\Debug\net6.0\TextManipulation.dll
+E:\Project 101\TextManipulation\bin\Debug\net6.0\TextManipulation.pdb
+E:\Project 101\TextManipulation\obj\Debug\net6.0\TextManipulation.csproj.AssemblyReference.cache
+E:\Project 101\TextManipulation\obj\Debug\net6.0\TextManipulation.GeneratedMSBuildEditorConfig.editorconfig
+E:\Project 101\TextManipulation\obj\Debug\net6.0\TextManipulation.AssemblyInfoInputs.cache
+E:\Project 101\TextManipulation\obj\Debug\net6.0\TextManipulation.AssemblyInfo.cs
+E:\Project 101\TextManipulation\obj\Debug\net6.0\TextManipulation.csproj.CoreCompileInputs.cache
+E:\Project 101\TextManipulation\obj\Debug\net6.0\TextManipulation.dll
+E:\Project 101\TextManipulation\obj\Debug\net6.0\refint\TextManipulation.dll
+E:\Project 101\TextManipulation\obj\Debug\net6.0\TextManipulation.pdb
+E:\Project 101\TextManipulation\obj\Debug\net6.0\TextManipulation.genruntimeconfig.cache
+E:\Project 101\TextManipulation\obj\Debug\net6.0\ref\TextManipulation.dll

@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "TextManipulationOnDotNet/1.0.0": {
+        "runtime": {
+          "TextManipulationOnDotNet.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "TextManipulationOnDotNet/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

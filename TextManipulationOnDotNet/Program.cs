@@ -55,7 +55,7 @@ namespace TextManipulationWithFunctions
             string[] words = text.Split(new[] { ' ', '\n', '\r', '\t', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string word in words)
             {
-                if (word.StartsWith(startingChar.ToString(), StringComparison.OrdinalIgnoreCase))
+                if (word.StartsWith(startingChar.ToString()))
                 {
                     Console.WriteLine(word);
                 }
@@ -65,14 +65,33 @@ namespace TextManipulationWithFunctions
         static int CountWordOccurrences(string text, string word)
         {
             int count = 0;
-            int index = text.IndexOf(word, StringComparison.OrdinalIgnoreCase);
-            while (index != -1)
+            int index = -1;
+
+            while ((index = text.IndexOf(word, index + 1, StringComparison.OrdinalIgnoreCase)) != -1)
             {
-                count++;
-                index = text.IndexOf(word, index + 1, StringComparison.OrdinalIgnoreCase);
+                // Check if the match is a whole word
+                bool isWholeWord = IsWholeWord(text, word, index);
+
+                if (isWholeWord)
+                    count++;
             }
 
             return count;
+        }
+
+        static bool IsWholeWord(string text, string word, int index)
+        {
+            // Check if the previous character is a word character
+            if (index > 0 && char.IsLetterOrDigit(text[index - 1]))
+                return false;
+
+            int wordEndIndex = index + word.Length;
+
+            // Check if the next character is a word character
+            if (wordEndIndex < text.Length && char.IsLetterOrDigit(text[wordEndIndex]))
+                return false;
+
+            return true;
         }
     }
 }

@@ -65,24 +65,24 @@ namespace TextManipulationWithFunctions
 
         static int CountWordOccurrences(string text, string word)
         {
-            int count = 0;
-            int index = -1;
+            //int count = 0;
+            //int index = -1;
 
-            while ((index = text.IndexOf(word, index + 1, StringComparison.OrdinalIgnoreCase)) != -1)
-            {
-                // Check if the match is a whole word
-                bool isWholeWord = IsWholeWord(text, word, index);
+            //while ((index = text.IndexOf(word, index + 1, StringComparison.OrdinalIgnoreCase)) != -1)
+            //{
+            //    // Check if the match is a whole word
+            //    bool isWholeWord = IsWholeWord(text, word, index);
 
-                if (isWholeWord)
-                    count++;
-            }
+            //    if (isWholeWord)
+            //        count++;
+            //}
 
-            return count;
+            //return count;
 
             //Using Regex
-            //string pattern = @"\b" + Regex.Escape(word) + @"\b";
-            //MatchCollection matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase);
-            //return matches.Count;
+            string pattern = @"\b" + Regex.Escape(word) + @"\b";
+            MatchCollection matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase);
+            return matches.Count;
         }
 
         static bool IsWholeWord(string text, string word, int index)

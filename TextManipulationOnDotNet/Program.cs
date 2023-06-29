@@ -53,6 +53,7 @@ namespace TextManipulationWithFunctions
 
         static void FindWordsStartingWith(string text, char startingChar)
         {
+            // Split the text into an array of words using various delimiters and remove empty string like : and,,as, output: and as
             string[] words = text.Split(new[] { ' ', '\n', '\r', '\t', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string word in words)
             {
@@ -65,34 +66,37 @@ namespace TextManipulationWithFunctions
 
         static int CountWordOccurrences(string text, string word)
         {
-            //int count = 0;
-            //int index = -1;
+            int count = 0;
+            int index = -1;
 
-            //while ((index = text.IndexOf(word, index + 1, StringComparison.OrdinalIgnoreCase)) != -1)
-            //{
-            //    // Check if the match is a whole word
-            //    bool isWholeWord = IsWholeWord(text, word, index);
+            while ((index = text.IndexOf(word, index + 1, StringComparison.OrdinalIgnoreCase)) != -1)
+            {
+                // Check if the match is a whole word
+                bool isWholeWord = IsWholeWord(text, word, index);
 
-            //    if (isWholeWord)
-            //        count++;
-            //}
+                if (isWholeWord)
+                    count++;
+            }
 
-            //return count;
+            return count;
 
             //Using Regex
-            string pattern = @"\b" + Regex.Escape(word) + @"\b";
-            MatchCollection matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase);
-            return matches.Count;
+            //string pattern = @"\b" + Regex.Escape(word) + @"\b";
+            //MatchCollection matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase);
+            //return matches.Count;
         }
 
+        // This function for check to for whole word //if not used then its also count of substring word
         static bool IsWholeWord(string text, string word, int index)
         {
+            // We need to know that the character before the word is not a letter or digit, 
             // Check if the previous character is a word character
             if (index > 0 && char.IsLetterOrDigit(text[index - 1]))
                 return false;
 
             int wordEndIndex = index + word.Length;
 
+            // We need to know that the character after the word is not a letter or digit, 
             // Check if the next character is a word character
             if (wordEndIndex < text.Length && char.IsLetterOrDigit(text[wordEndIndex]))
                 return false;
